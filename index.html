@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <style>
+        /*p {
+            height: 20px;
+            width: 50%;
+            background-color: green;
+        }*/
+    </style>
+</head>
+<h1>Millioneer</h1>
+<div ng-app="millioneer" ng-controller="myCtrl">
+    <div ng-show="!winner()">
+        <!--<h3> timer: {{startTimer()}}</h3>-->
+        <h3>timer : {{timer}}</h3>
+        <h3>your money : {{myMoney()}}</h3>
+        <h3>qustion worth : {{questions[index]["money"]}}</h3>
+        <h3>index : {{index}}</h3>
+        <!--<ul>-->
+        <!--<li ng-repeat="question in questions">-->
+        <h3>{{questions[index]["q"]}}</h3>
+        <p ng-style="{'background-color':''}" ng-click="checkAns(index,'ans1')">{{questions[index]["ans1"]}}</p>
+        <p ng-click="checkAns(index,'ans2')">{{questions[index]["ans2"]}}</p>
+        <p ng-click="checkAns(index,'ans3')">{{questions[index]["ans3"]}}</p>
+        <p ng-click="checkAns(index,'ans4')">{{questions[index]["ans4"]}}</p>
+        <p ng-style="{'background-color':getColor()}">{{answer}}</p>
+        <br>
+        <!--</li>-->
+        <!--</ul>-->
+        <button ng-click="crowd()">crowd opinion</button>
+        <button ng-click="split()">split</button>
+        <button ng-click="phoneMember()">phone member</button>
+    </div>
+    <div ng-show="winner()">
+        <h1 ng-style="{'background-color':'green'}">congrtulation, you are Milioneer</h1>
+    </div>
+</div>
+
+<script>
+    var app = angular.module('millioneer', []);
+    app.controller('myCtrl', function ($scope, $timeout, $interval) {
+        $scope.questions = [{ "q": "what does cow drink?", "ans1": "milk", "ans2": "cuccumber", "ans3": "tommato", "ans4": "water", "money": 100, "correct": "ans4" },
+        { "q": "what is the color of the sky?", "ans1": "blue", "ans2": "green", "ans3": "white", "ans4": "gold", "money": 200, "correct": "ans1" },
+        { "q": "what is the speed of the chita?", "ans1": "20 kph", "ans2": "100 kph", "ans3": "900 kph", "ans4": "50 kph", "money": 400, "correct": "ans2" },
+        { "q": "what is metabolizem?", "ans1": "extend of period", "ans2": "when a woman need to birth for the fiest time", "ans3": "exchange materials in our body", "ans4": "disappear of plants", "money": 800, "correct": "ans3" },
+        { "q": "pick the singer?", "ans1": "Tiger Woods", "ans2": "Michel Phelps", "ans3": "Elvis Presli", "ans4": "Adam Sendler", "money": 1600, "correct": "ans3" },
+        { "q": "best basketball player of all times?", "ans1": "Michel Jorden", "ans2": "Adam Daglas", "ans3": "Stephan Karry", "ans4": "James Harden", "money": 3200, "correct": "ans1" },
+        { "q": "what is the tallest tree in the world?", "ans1": "Sherman tree", "ans2": "Giant Sequoia ", "ans3": "Grand Fir", "ans4": "Lawson Cypress", "money": 6400, "correct": "ans1" },
+        { "q": "best Pizza in the world?", "ans1": "blNew York", "ans2": "Chicago", "ans3": "Rome", "ans4": "Florida", "money": 12500, "correct": "ans2" },
+        { "q": "who is the most Communist Nation In The World?", "ans1": "Laos", "ans2": " North Korea", "ans3": "Cuab", "ans4": "Chaina", "money": 25000, "correct": "ans4" },
+        { "q": "who is the richest country in the world?", "ans1": "Singapore", "ans2": "Luxembourg", "ans3": "Qatar", "ans4": "United States", "money": 50000, "correct": "ans3" },
+        { "q": "which animall has the strongest bite?", "ans1": "Hippopotamus", "ans2": "Jaguar", "ans3": "Crocodile", "ans4": "Hyena", "money": 1000000, "correct": "ans3" }
+        ];
+        $scope.checkAns = function (x, ans) {
+            $scope.ind = x;
+            if (ans == $scope.questions[x]["correct"]) {
+                $scope.answer = "CORRECT";
+                $interval.cancel(interval);
+                $timeout(function () {
+                    $scope.index++;
+                    $scope.answer = "";
+                    $scope.resetTimer();
+                }, 2000);
+
+            }
+            else {
+                $scope.answer = "WRONG";
+                $interval.cancel(interval);
+                $timeout(function () {
+                    $scope.money = 0;
+                    $scope.index = 0;
+                    $scope.answer = "";
+                    $scope.resetTimer();
+                }, 2000);
+
+            }
+        }
+
+        $scope.index = 0;
+        $scope.timer = 5;
+
+        var interval = $interval(function () {
+            $scope.timer--;
+        }, 1000)
+
+
+        $scope.resetTimer = function () {
+            $scope.timer = 5;
+        }
+        $scope.member = function () { }
+        $scope.split = function () { }
+        $scope.phoneMember = function () { }
+        $scope.myMoney = function () {
+            if ($scope.index == 0) {
+                return 0;
+            }
+            return $scope.questions[$scope.index - 1]["money"];
+        }
+        $scope.getColor = function () {
+            if ($scope.answer == "CORRECT") { return "green"; }
+            if ($scope.answer == "WRONG") { return "red"; }
+        }
+        $scope.winner = function () {
+            return $scope.myMoney() === 1000000;
+        }
+        if ($scope.timer == 0) {//not working
+            $interval.cancel(interval);
+            $scope.answer = "time out";
+
+        }
+        if ($scope.answer == "time out") {//not working
+            $interval(function () {
+                $scope.index = 0;
+                $scope.answer = "";
+                $scope.resetTimer();
+            });
+        }
+
+    });
+
+</script>
+
+
+</html>
+
+<!--the index is to remove items according to indexes-->
