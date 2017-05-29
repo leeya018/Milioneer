@@ -15,6 +15,11 @@
             width: 5%;
         }
         
+        #quit_img {
+            float: left;
+            padding: 10px;
+        }
+        
         #rich_img {
             float: left;
             padding: 10px;
@@ -25,33 +30,22 @@
             padding: 10px;
         }
         
-
-        
         #main {
             width: 300%;
         }
-        #timer{
-            margin-top: 10%;   
-        }
-        /*.left {
-
- 
-            display: inline;
-        }
         
-        .right {
-
-            margin-left: "300px";
-            display: inline;
-        }*/
+        #timer {
+            margin-top: 10%;
+        }
     </style>
 </head>
 
 <div ng-app="millioneer" ng-controller="myCtrl">
-    <div ng-show="!winner()">
+    <div ng-show="!winner() && !quit">
         <div id="main">
             <img id="billioneer_icon" src="billioneer_letters.png" alt="">
             <img id="rich_img" src="rich.png">
+            <img id="quit_img" src="quit.png" ng-click="quitGame()">
         </div><br>
         <h3 id="timer">timer : {{timer}}</h3>
         <h3>you play on : {{questions[index]["money"]}} shekels</h3>
@@ -82,7 +76,10 @@
 
     </div>
     <div ng-show="winner()">
-        <h1 ng-style="{'background-color':'green'}">congrtulation, you are Milioneer</h1>
+        <h1 ng-style="{'background-color':'green'}">congrtulation, you are Milioneer <br> you won : {{myMoney()}}</h1>
+    </div>
+    <div ng-show="quit">
+        <h1 ng-style="{'background-color':'green'}">congrtulation, you won : {{myMoney()}}</h1>
     </div>
 </div>
 
@@ -164,7 +161,11 @@
         $scope.crowdOpinion = "";
         $scope.crowdClick = false;
         $scope.stopTimer = false;
+        $scope.quit = false;
 
+        $scope.quitGame = function () {
+            $scope.quit = true;
+        }
         $scope.reestartWheels = function () {
             $timeout(function () {
                 $scope.splitClick = false;
