@@ -5,11 +5,9 @@
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
     <style>
-        /*p {
-            height: 20px;
-            width: 50%;
-            background-color: green;
-        }*/
+        #app {
+            padding-left: 1%;
+        }
         
         img {
             width: 5%;
@@ -40,16 +38,16 @@
     </style>
 </head>
 
-<div ng-app="millioneer" ng-controller="myCtrl">
+<div id="app" ng-app="millioneer" ng-controller="myCtrl">
     <div ng-show="!winner() && !quit">
         <div id="main">
             <img id="billioneer_icon" src="billioneer_letters.png" alt="">
             <img id="rich_img" src="rich.png">
             <img id="quit_img" src="quit.png" ng-click="quitGame()">
         </div><br>
-        <h3 id="timer">timer : {{timer}}</h3>
+        <h3 id="timer">timer : <span ng-style="{'color':timerColor}">{{timer}}</span></h3>
         <h3>you play on : {{questions[index]["money"]}} shekels</h3>
-        <h3>{{questions[index]["q"]}}</h3>
+        <h1>{{questions[index]["q"]}}</h1>
         <p ng-show="showAns1" ng-style="{'background-color':''}" ng-click="checkAns(index,'ans1')">{{questions[index]["ans1"]}}</p>
         <p ng-show="showAns2" ng-click="checkAns(index,'ans2')">{{questions[index]["ans2"]}}</p>
         <p ng-show="showAns3" ng-click="checkAns(index,'ans3')">{{questions[index]["ans3"]}}</p>
@@ -65,9 +63,7 @@
             <img src="phoneMember_icon.png" ng-click="phoneMember()" ng-show="!disablePhoneMember">
         </div>
 
-        <!--<button ng-show="!crowdOpinion" ng-click="crowd()">crowd opinion</button>
-        <button ng-show="!splitClick" ng-click="split()">split</button>
-        <button ng-click="phoneMember()" ng-show="!disablePhoneMember">phone member</button>-->
+
         <input ng-show="needToCall" type="text" ng-model="personToCall">
         <img src="phone_icon.png" ng-show="needToCall" ng-click="startDialPerson()">
         <p ng-show="startDial"> calling <span>{{personToCall}} ....</span></p>
@@ -75,6 +71,8 @@
         <p ng-show="crowdClick">{{crowdOpinion}}</p>
 
     </div>
+  
+
     <div ng-show="winner()">
         <h1 ng-style="{'background-color':'green'}">congrtulation, you are Milioneer <br> you won : {{myMoney()}}</h1>
     </div>
@@ -162,6 +160,8 @@
         $scope.crowdClick = false;
         $scope.stopTimer = false;
         $scope.quit = false;
+        $scope.timerColor = "";
+
 
         $scope.quitGame = function () {
             $scope.quit = true;
@@ -187,7 +187,13 @@
         }
 
         var interval = $interval(function () {
+            if ($scope.timer < 16) {
+                $scope.timerColor = "red";
+            }
             if ($scope.timer > 0) {
+                if ($scope.timer > 15) {
+                    $scope.timerColor = "";
+                }
                 if ($scope.stopTimer == false) {
                     $scope.timer--;
                 }
