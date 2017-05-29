@@ -14,18 +14,47 @@
         img {
             width: 5%;
         }
+        
+        #rich_img {
+            float: left;
+            padding: 10px;
+        }
+        
+        #billioneer_icon {
+            float: left;
+            padding: 10px;
+        }
+        
+
+        
+        #main {
+            width: 300%;
+        }
+        #timer{
+            margin-top: 10%;   
+        }
+        /*.left {
+
+ 
+            display: inline;
+        }
+        
+        .right {
+
+            margin-left: "300px";
+            display: inline;
+        }*/
     </style>
 </head>
-<h1>Millioneer</h1>
+
 <div ng-app="millioneer" ng-controller="myCtrl">
     <div ng-show="!winner()">
-        <!--<h3> timer: {{startTimer()}}</h3>-->
-        <h3>timer : {{timer}}</h3>
-        <h3>your money : {{myMoney()}}</h3>
-        <h3>qustion worth : {{questions[index]["money"]}}</h3>
-        <h3>index : {{index}}</h3>
-        <!--<ul>-->
-        <!--<li ng-repeat="question in questions">-->
+        <div id="main">
+            <img id="billioneer_icon" src="billioneer_letters.png" alt="">
+            <img id="rich_img" src="rich.png">
+        </div><br>
+        <h3 id="timer">timer : {{timer}}</h3>
+        <h3>you play on : {{questions[index]["money"]}} shekels</h3>
         <h3>{{questions[index]["q"]}}</h3>
         <p ng-show="showAns1" ng-style="{'background-color':''}" ng-click="checkAns(index,'ans1')">{{questions[index]["ans1"]}}</p>
         <p ng-show="showAns2" ng-click="checkAns(index,'ans2')">{{questions[index]["ans2"]}}</p>
@@ -35,11 +64,12 @@
         <br>
         <!--</li>-->
         <!--</ul>-->
-        <img src="crowd_icon.png" ng-show="!crowdOpinion" ng-click="crowd()">
-        <img src="half_icon.png" ng-show="!splitClick" ng-click="split()">
-        <img src="phoneMember_icon.png" ng-click="phoneMember()" ng-show="!disablePhoneMember">
 
-
+        <div class="right">
+            <img src="crowd_icon.png" ng-show="!crowdOpinion" ng-click="crowd()">
+            <img src="half_icon.png" ng-show="!splitClick" ng-click="split()">
+            <img src="phoneMember_icon.png" ng-click="phoneMember()" ng-show="!disablePhoneMember">
+        </div>
 
         <!--<button ng-show="!crowdOpinion" ng-click="crowd()">crowd opinion</button>
         <button ng-show="!splitClick" ng-click="split()">split</button>
