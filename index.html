@@ -10,6 +10,10 @@
             width: 50%;
             background-color: green;
         }*/
+        
+        img {
+            width: 5%;
+        }
     </style>
 </head>
 <h1>Millioneer</h1>
@@ -23,17 +27,29 @@
         <!--<ul>-->
         <!--<li ng-repeat="question in questions">-->
         <h3>{{questions[index]["q"]}}</h3>
-        <p ng-style="{'background-color':''}" ng-click="checkAns(index,'ans1')">{{questions[index]["ans1"]}}</p>
-        <p ng-click="checkAns(index,'ans2')">{{questions[index]["ans2"]}}</p>
-        <p ng-click="checkAns(index,'ans3')">{{questions[index]["ans3"]}}</p>
-        <p ng-click="checkAns(index,'ans4')">{{questions[index]["ans4"]}}</p>
+        <p ng-show="showAns1" ng-style="{'background-color':''}" ng-click="checkAns(index,'ans1')">{{questions[index]["ans1"]}}</p>
+        <p ng-show="showAns2" ng-click="checkAns(index,'ans2')">{{questions[index]["ans2"]}}</p>
+        <p ng-show="showAns3" ng-click="checkAns(index,'ans3')">{{questions[index]["ans3"]}}</p>
+        <p ng-show="showAns4" ng-click="checkAns(index,'ans4')">{{questions[index]["ans4"]}}</p>
         <p ng-style="{'background-color':getColor()}">{{answer}}</p>
         <br>
         <!--</li>-->
         <!--</ul>-->
-        <button ng-click="crowd()">crowd opinion</button>
-        <button ng-click="split()">split</button>
-        <button ng-click="phoneMember()">phone member</button>
+        <img src="crowd_icon.png" ng-show="!crowdOpinion" ng-click="crowd()">
+        <img src="half_icon.png" ng-show="!splitClick" ng-click="split()">
+        <img src="phoneMember_icon.png" ng-click="phoneMember()" ng-show="!disablePhoneMember">
+
+
+        <!--
+        <button ng-show="!crowdOpinion" ng-click="crowd()">crowd opinion</button>
+        <button ng-show="!splitClick" ng-click="split()">split</button>
+        <button ng-click="phoneMember()" ng-show="!disablePhoneMember">phone member</button>-->
+        <input ng-show="needToCall" type="text" ng-model="personToCall">
+        <img src="phone_icon.png" ng-show="needToCall" ng-click="startDialPerson()">
+        <p ng-show="startDial"> calling <span>{{personToCall}} ....</span></p>
+        <p>{{contactAnswer}}</p>
+        <p ng-show="crowdClick">{{crowdOpinion}}</p>
+
     </div>
     <div ng-show="winner()">
         <h1 ng-style="{'background-color':'green'}">congrtulation, you are Milioneer</h1>
@@ -56,6 +72,22 @@
         { "q": "which animall has the strongest bite?", "ans1": "Hippopotamus", "ans2": "Jaguar", "ans3": "Crocodile", "ans4": "Hyena", "money": 1000000, "correct": "ans3" }
         ];
         $scope.checkAns = function (x, ans) {
+            if ($scope.crowdClick == true) {
+                $scope.crowdClick = false;
+            }
+            if ($scope.splitClick == true) {
+                $timeout(function () {
+                    $scope.showAns1 = true;
+                    $scope.showAns2 = true;
+                    $scope.showAns3 = true;
+                    $scope.showAns4 = true;
+                }, 2000);
+
+            }
+            if ($scope.disablePhoneMember == true) {
+                $scope.needToCall = false;
+                $scope.contactAnswer = "";
+            }
             $scope.ind = x;
             if (ans == $scope.questions[x]["correct"]) {
                 $scope.answer = "CORRECT";
@@ -68,6 +100,7 @@
 
             }
             else {
+                $scope.reestartWheels();
                 $scope.answer = "WRONG";
                 $interval.cancel(interval);
                 $timeout(function () {
@@ -81,19 +114,129 @@
         }
 
         $scope.index = 0;
-        $scope.timer = 5;
+        $scope.timer = 3;
+        $scope.personToCall = "";
+        $scope.needToCall = false;
+        $scope.startDial = false;
+        $scope.contactAnswer = "";
+        $scope.disablePhoneMember = false;
+        $scope.showAns1 = true;
+        $scope.showAns2 = true;
+        $scope.showAns3 = true;
+        $scope.showAns4 = true;
+        $scope.splitClick = false;
+        $scope.crowdOpinion = "";
+        $scope.crowdClick = false;
+
+        $scope.reestartWheels = function () {
+            $timeout(function () {
+                $scope.splitClick = false;
+                $scope.crowdOpinion = "";
+                $scope.disablePhoneMember = false;
+            },2000);
+        }
+
+        $scope.startDialPerson = function () {
+            $scope.disablePhoneMember = true;
+            $scope.startDial = true;
+            $timeout(function () {
+                var ans = $scope.questions[$scope.index]["correct"];
+                var indAns = ans.substring(3);
+                $scope.contactAnswer = "I think the answer is " + indAns;
+                $scope.startDial = false;
+                $scope.personToCall = "";
+            }, 2000);
+        }
 
         var interval = $interval(function () {
-            $scope.timer--;
-        }, 1000)
+            if ($scope.timer > 0) {
+                $scope.timer--;
+            } else {
+                $scope.answer = "TIME OUT";
+                $scope.reestartWheels();
+                $timeout(function () {
+                    $scope.index = 0;
+                    $scope.answer = "";
+                    $scope.resetTimer();
+                }, 2000);
+            }
+        }, 1000);
+
+
 
 
         $scope.resetTimer = function () {
-            $scope.timer = 5;
+            $scope.timer = 3;
         }
-        $scope.member = function () { }
-        $scope.split = function () { }
-        $scope.phoneMember = function () { }
+        $scope.crowd = function () {
+            $scope.crowdClick = true;
+            var correctAns = $scope.questions[$scope.index]["correct"];
+            scalasCrown = [
+                [60, 20, 10, 10],
+                [80, 5, 15, 0],
+                [40, 10, 30, 20]
+            ];
+            var randScanlNum = Math.floor((Math.random() * 2) + 1);
+            var choosenScal = scalasCrown[randScanlNum];
+            var indCorrectAns = correctAns.substring(3);
+            indCorrectAns--;
+            if (indCorrectAns > 0) {
+                var temp = choosenScal[0];
+                choosenScal[0] = choosenScal[indCorrectAns];
+                choosenScal[indCorrectAns] = temp;
+            }
+            $scope.crowdOpinion = "ans1 : " + choosenScal[0] + "%, " + "ans2 : " + choosenScal[1] + "%, " + "ans3 : " + choosenScal[2] + "%, " + "ans4 : " + choosenScal[3];
+
+
+
+        }
+        $scope.split = function () {
+            $scope.splitClick = true;
+            var correctAns = $scope.questions[$scope.index]["correct"];
+            var counter = 0;
+            do {
+                var randNum = Math.floor((Math.random() * 4) + 1);
+                var randAns = "ans" + randNum;
+                if (randAns !== correctAns) {
+
+                    switch (randAns) {
+                        case "ans1":
+                            if ($scope.showAns1 == true) {
+                                counter++;
+                                $scope.showAns1 = false;
+                            }
+                            break;
+                        case "ans2":
+                            if ($scope.showAns2 == true) {
+                                counter++;
+                                $scope.showAns2 = false;
+                            }
+                            break;
+                        case "ans3":
+                            if ($scope.showAns3 == true) {
+                                counter++;
+                                $scope.showAns3 = false;
+                            }
+                            break;
+                        case "ans4":
+                            if ($scope.showAns4 == true) {
+                                counter++;
+                                $scope.showAns4 = false;
+                            }
+                            break;
+                    }
+                }
+            }
+            while (counter < 2)
+        }
+        $scope.phoneMember = function () {
+            $timeout(function () {
+                $scope.needToCall = true;
+                $scope.calling = "calling" + $scope.personToCall;
+            });
+            var correctAns = $scope.questions[$scope.index]["correct"];
+
+        }
         $scope.myMoney = function () {
             if ($scope.index == 0) {
                 return 0;
@@ -102,23 +245,13 @@
         }
         $scope.getColor = function () {
             if ($scope.answer == "CORRECT") { return "green"; }
-            if ($scope.answer == "WRONG") { return "red"; }
+            if ($scope.answer == "WRONG" || $scope.answer == "TIME OUT") { return "red"; }
+
         }
         $scope.winner = function () {
             return $scope.myMoney() === 1000000;
         }
-        if ($scope.timer == 0) {//not working
-            $interval.cancel(interval);
-            $scope.answer = "time out";
 
-        }
-        if ($scope.answer == "time out") {//not working
-            $interval(function () {
-                $scope.index = 0;
-                $scope.answer = "";
-                $scope.resetTimer();
-            });
-        }
 
     });
 
