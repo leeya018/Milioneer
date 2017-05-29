@@ -40,8 +40,8 @@
         <img src="phoneMember_icon.png" ng-click="phoneMember()" ng-show="!disablePhoneMember">
 
 
-        <!--
-        <button ng-show="!crowdOpinion" ng-click="crowd()">crowd opinion</button>
+
+        <!--<button ng-show="!crowdOpinion" ng-click="crowd()">crowd opinion</button>
         <button ng-show="!splitClick" ng-click="split()">split</button>
         <button ng-click="phoneMember()" ng-show="!disablePhoneMember">phone member</button>-->
         <input ng-show="needToCall" type="text" ng-model="personToCall">
@@ -91,30 +91,36 @@
             $scope.ind = x;
             if (ans == $scope.questions[x]["correct"]) {
                 $scope.answer = "CORRECT";
-                $interval.cancel(interval);
+                // $interval.cancel(interval);
+                $scope.stopTimer = true;
+
                 $timeout(function () {
                     $scope.index++;
                     $scope.answer = "";
                     $scope.resetTimer();
+                    $scope.stopTimer = false;
+
                 }, 2000);
 
             }
             else {
                 $scope.reestartWheels();
                 $scope.answer = "WRONG";
-                $interval.cancel(interval);
+                $scope.stopTimer = true;
+                // $interval.cancel(interval);
                 $timeout(function () {
                     $scope.money = 0;
                     $scope.index = 0;
                     $scope.answer = "";
                     $scope.resetTimer();
+                    $scope.stopTimer = false;
                 }, 2000);
 
             }
         }
 
         $scope.index = 0;
-        $scope.timer = 3;
+        $scope.timer = 60;
         $scope.personToCall = "";
         $scope.needToCall = false;
         $scope.startDial = false;
@@ -127,13 +133,14 @@
         $scope.splitClick = false;
         $scope.crowdOpinion = "";
         $scope.crowdClick = false;
+        $scope.stopTimer = false;
 
         $scope.reestartWheels = function () {
             $timeout(function () {
                 $scope.splitClick = false;
                 $scope.crowdOpinion = "";
                 $scope.disablePhoneMember = false;
-            },2000);
+            }, 2000);
         }
 
         $scope.startDialPerson = function () {
@@ -150,7 +157,9 @@
 
         var interval = $interval(function () {
             if ($scope.timer > 0) {
-                $scope.timer--;
+                if ($scope.stopTimer == false) {
+                    $scope.timer--;
+                }
             } else {
                 $scope.answer = "TIME OUT";
                 $scope.reestartWheels();
@@ -166,7 +175,10 @@
 
 
         $scope.resetTimer = function () {
-            $scope.timer = 3;
+            $scope.timer = 60;
+
+
+
         }
         $scope.crowd = function () {
             $scope.crowdClick = true;
