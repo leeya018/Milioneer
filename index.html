@@ -71,7 +71,7 @@
         <p ng-show="crowdClick">{{crowdOpinion}}</p>
 
     </div>
-  
+
 
     <div ng-show="winner()">
         <h1 ng-style="{'background-color':'green'}">congrtulation, you are Milioneer <br> you won : {{myMoney()}}</h1>
@@ -145,7 +145,7 @@
         }
 
         $scope.index = 0;
-        $scope.timer = 60;
+        $scope.timer = 11;
         $scope.personToCall = "";
         $scope.needToCall = false;
         $scope.startDial = false;
@@ -199,6 +199,7 @@
                 }
             } else {
                 $scope.answer = "TIME OUT";
+                $scope.quit = true;
                 $scope.reestartWheels();
                 $timeout(function () {
                     $scope.index = 0;
@@ -212,7 +213,7 @@
 
 
         $scope.resetTimer = function () {
-            $scope.timer = 60;
+            $scope.timer = 11;
 
 
 
@@ -234,8 +235,39 @@
                 choosenScal[0] = choosenScal[indCorrectAns];
                 choosenScal[indCorrectAns] = temp;
             }
-            $scope.crowdOpinion = "ans1 : " + choosenScal[0] + "%, " + "ans2 : " + choosenScal[1] + "%, " + "ans3 : " + choosenScal[2] + "%, " + "ans4 : " + choosenScal[3];
+            if ($scope.showAns1 == false || $scope.showAns2 == false || $scope.showAns3 == false || $scope.showAns4 == false) {
+                if ($scope.showAns1 == true) {
+                    if ($scope.crowdOpinion == "") {
+                        $scope.crowdOpinion += "1 : " + choosenScal[0] + "% ,";
+                    } else {
+                        $scope.crowdOpinion += "2 : " + choosenScal[0] + "% ,";
+                    }
 
+                }
+                if ($scope.showAns2 == true) {
+                    if ($scope.crowdOpinion == "") {
+                        $scope.crowdOpinion += "1 : " + choosenScal[1] + "% ,";
+                    } else {
+                        $scope.crowdOpinion += "2 : " + choosenScal[1] + "% ,";
+                    }
+                }
+                if ($scope.showAns3 == true) {
+                    if ($scope.crowdOpinion == "") {
+                        $scope.crowdOpinion += "1 : " + choosenScal[2] + "% ,";
+                    } else {
+                        $scope.crowdOpinion += "2 : " + choosenScal[2] + "% ,";
+                    }
+                }
+                if ($scope.showAns4 == true) {
+                    if ($scope.crowdOpinion == "") {
+                        $scope.crowdOpinion += "1 : " + choosenScal[3] + "% ,";
+                    } else {
+                        $scope.crowdOpinion += "2 : " + choosenScal[3] + "% ,";
+                    }
+                }
+            } else {
+                $scope.crowdOpinion = "1 : " + choosenScal[0] + "%, " + "2 : " + choosenScal[1] + "%, " + "3 : " + choosenScal[2] + "%, " + "4 : " + choosenScal[3] + "%";
+            }
 
 
         }
